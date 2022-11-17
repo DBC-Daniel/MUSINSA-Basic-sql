@@ -71,7 +71,7 @@
 -- COMMAND ----------
 
 -- DBTITLE 1,2. 해당 SQL 실행하여 Database 설정
-use megazone
+use musinsa;
 
 -- COMMAND ----------
 
@@ -106,22 +106,18 @@ show tables;
 -- DBTITLE 1,전체 테이블 열어보기
 SELECT
 * 
-FROM People10M;
-
--- COMMAND ----------
-
-select * from megazone.People10M;
+FROM sales;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,전체 테이블 row 수 확인하기
-select count(*) from People10M;
+select count(*) from sales;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,as 이용하여 원하는 컬럼명으로 출력(alias)
-select birthDate as `날짜`
-from People10M;
+select date as `날짜`
+from sales;
 
 -- COMMAND ----------
 
@@ -132,17 +128,17 @@ from People10M;
 
 -- COMMAND ----------
 
-select * from megazone.People10M;
+select * from sales;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,gender라는 컬럼이 가지고 있는 고유값을 확인
-SELECT distinct firstName FROM megazone.People10M;
+SELECT distinct artist_id FROM sales;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,count를 통해 distinct한 값의 갯수 파악
-SELECT count(distinct firstName) FROM People10M;
+SELECT count(distinct artist_id) FROM sales;
 
 -- COMMAND ----------
 
@@ -155,27 +151,27 @@ SELECT count(distinct firstName) FROM People10M;
 -- COMMAND ----------
 
 -- DBTITLE 1,기본
-describe table People10M
+describe table sales
 
 -- COMMAND ----------
 
 -- DBTITLE 1,약자
-desc table People10M
+desc table sales
 
 -- COMMAND ----------
 
 -- DBTITLE 1,extended 옵션 추가 시, 추가 메타정보 확인 가능(저장 경로, 테이블 생성 시간 등)
-describe table Extended People10M
+describe table Extended sales
 
 -- COMMAND ----------
 
 -- DBTITLE 1,뒤에 detail 추가 시, 테이블 포멧, 저장경로, 생성 시간, 파티션 정보 등 확인 가능
-desc detail People10M
+desc detail sales
 
 -- COMMAND ----------
 
 -- DBTITLE 1,뒤에 query 추가 시, 원하는 쿼리문의 컬럼명, 데이터 타입 등 확인 가능
-desc query select salary from People10M
+desc query select date from sales
 
 -- COMMAND ----------
 
@@ -189,46 +185,52 @@ desc query select salary from People10M
 
 -- DBTITLE 1,Where절에는 집계함수를 사용할 수 없다. (아래 예시는 집계함수를 사용했기 때문에 Fail 발생)
 select *
-from People10M
+from sales
 where count(id) > 3;
 
 -- COMMAND ----------
 
--- DBTITLE 1,원하는 조건으로 필터링 하기(gender가 F인 데이터만 출력)
+-- DBTITLE 1,원하는 조건으로 필터링 하기(collector_id가 103인 데이터만 출력)
 select *
-from People10M
-where gender = 'F';
+from sales
+where collector_id = 103;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,원하는 조건으로 필터링 하기(or 사용)
 select *
-from People10M
-where gender = 'F'
-and (id = 3 or id = 5);
+from sales
+where collector_id = 103
+and (id = 1004 or id = 1005);
 
 -- COMMAND ----------
 
--- DBTITLE 1,원하는 조건으로 필터링 하기(and/or 사용)
-select * 
-from People10M
-where (gender = 'F'
-and id = 3) or (id = 5
-and lastName = 'Bonar');
-
--- COMMAND ----------
-
--- DBTITLE 1,원하는 조건으로 필터링 하기(부등호)
+-- DBTITLE 1,원하는 조건으로 필터링 하기(and 사용)
 select *
-from People10M
-where salary > 60000;
+from sales
+where collector_id = 103 and id =1004;
+
+-- COMMAND ----------
+
+-- DBTITLE 1,원하는 조건으로 필터링 하기(and / or 사용) 
+select *
+from sales
+where (collector_id = 103 and id =1004) 
+or (collector_id = 104 and id = 1001);
+
+-- COMMAND ----------
+
+-- DBTITLE 1,원하는 조건으로 필터링 하기(부등호) - 판매가가 1000이상인 데이터 조회해보기
+select *
+from sales
+where sales_price > 1000;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,원하는 조건으로 필터링 하기(Not 사용)
-select distinct(gender)
-from People10M
-where not gender = 'F';
+select distinct(artist_id)
+from sales
+where not collector_id = 103;
 
 -- COMMAND ----------
 
@@ -241,37 +243,41 @@ where not gender = 'F';
 -- COMMAND ----------
 
 -- DBTITLE 1,select 절의 컬럼과 group by절의 컬럼이 같지 않으면 Fail(올바른 수정 방법은 select 절에서 선택한 모든 컬럼을 group by에 추가하는 것)
-select salary
-from People10M
-group by gender;
+select id
+from sales
+group by collector_id;
 
 -- COMMAND ----------
 
--- DBTITLE 1,group by로 gender를 묶어 각 gender별 수를 파악하고 앞에서 사용했던 as를 이용해서 컬럼명 변경
-select gender, count(gender) as gender_count
-from People10M
-group by gender;
+-- DBTITLE 1,group by로 collector_id를 묶어 각 collector_id별 수를 파악하고 앞에서 사용했던 as를 이용해서 컬럼명 변경
+select collector_id, count(collector_id) as collector_id_count
+from sales
+group by collector_id;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,묶은 그룹의 집계함수값 group by에 없어도 가능
-select gender, count(gender) as gender_count, min(salary)
-from People10M
-group by gender;
+select collector_id, count(collector_id) as collector_id_count, min(sales_price)
+from sales
+group by collector_id;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,임의의 값의 경우, 추가해도 쿼리가 가능
-select '2022년' as Year, gender, count(gender) as gender_count
-from People10M
-group by gender;
+select '2022년' as Year, collector_id, count(collector_id) as collector_id_count, min(sales_price)
+from sales
+group by collector_id;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,alias(as)를 한글로 주고 싶을 땐, ``를 사용해야 함.
-select '2022년' as `연도`, gender, count(gender) as gender_count
-from People10M
-group by gender;
+select '2022년' as `연도`, collector_id, count(collector_id) as collector_id_count, min(sales_price)
+from sales
+group by collector_id;
+
+-- COMMAND ----------
+
+select * from sales;
 
 -- COMMAND ----------
 
@@ -283,39 +289,39 @@ group by gender;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC - 몇 년도에 태어난 사람이 제일 많을까요?
--- MAGIC - year(birthDate) as year
+-- MAGIC - 몇 년도, 몇 월, 며칠에 그림이 가장 많이 팔렸을까요?
+-- MAGIC - year(date) as year, month(date) as month, day(date) as day
 
 -- COMMAND ----------
 
-select year(birthDate) as year from megazone.People10M;
+select year(date) as year, month(date) as month, day(date) as day from sales;
 
 -- COMMAND ----------
 
-select year(birthDate) as year, count(*) 
-from megazone.People10M
-group by(year(birthDate));
+select day(date) as day, count(*) as `판매수`
+from sales
+group by day;
 
 -- COMMAND ----------
 
-select year(birthDate) as year, count(*) 
-from megazone.People10M
-group by(year(birthDate))
-order by count(*) desc
+select day(date) as day, count(*) as `판매수`
+from sales
+group by day
+order by day;
 
 -- COMMAND ----------
 
--- DBTITLE 1,연봉 기준으로 정렬하여 가장 작은 salary순으로 보임. (오름차순 - 작은 값부터 큰 값)
+-- DBTITLE 1,연봉 기준으로 정렬하여 가장 작은 sales_price순으로 보임. (오름차순 - 작은 값부터 큰 값)
 select *
-from People10M
-order by salary asc;
+from sales
+order by sales_price asc;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,연봉 기준으로 정렬하여 가장 큰 salary순으로 보임. (내림차순 - 큰 값부터 작은 값)
 select *
-from People10M
-order by salary desc;
+from sales
+order by sales_price desc;
 
 -- COMMAND ----------
 
@@ -340,116 +346,21 @@ order by salary desc;
 -- COMMAND ----------
 
 -- DBTITLE 1,우선 group by까지 적용된(앞에서 진행한 모든 function 적용) 쿼리 출력(똑같은 이름을 가진 사람은 몇명일까? desc을 통해 2명임을 확인)
-select firstName, middleName, lastName, count(*) as cnt
-from People10M
-where gender = 'F'
-group by firstName, middleName, lastName
-order by cnt desc;
+select day(date) as day, count(*) as `판매수`
+from sales
+group by day
+order by day;
 
 -- COMMAND ----------
 
--- DBTITLE 1,조건문을 걸어 cnt가 2명 이상인 결과만 남기기
-select firstName, middleName, lastName, count(*) as cnt
-from People10M
-where gender = 'F'
-group by firstName, middleName, lastName
-having cnt > 1
-order by cnt desc;
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC # 서브쿼리
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC - 서브 쿼리를 사용하면 서브쿼리 결과에 존재하는 데이터만 메인 쿼리에서 추출 -> 세미 조인
--- MAGIC - IN, EXISTS 연산자 사용
--- MAGIC - 어느 부분을 메인, 어느 부분을 서브로 구성할지 판단해줘야 함
--- MAGIC - 최종 출력해줘야 하는게 메인 쿼리
--- MAGIC - 자료를 제공해주는게 서브 쿼리
-
--- COMMAND ----------
-
--- DBTITLE 1,예제1)
--- MAGIC %md
--- MAGIC - 질문: `평균 급여`보다 급여가 많은 사원이 소속된 `부서코드`와 `부서명` 조회.
--- MAGIC - 여기서 메인 쿼리는 `부서코드`와 `부서명`을 조회하는 것.(from 서브 쿼리)
--- MAGIC - `평균급여`보다 급여가 많은 `사원정보`를 출력해야하는게 서브 쿼리. (from employee 테이블)
-
--- COMMAND ----------
-
--- DBTITLE 1,평균 급여는?
-select avg(sal)
-from emp;
-
--- COMMAND ----------
-
--- DBTITLE 1,사원 테이블에서 평균급여보다 급여가 많은 사원은?
-select empno, ename, sal
-from emp
-where sal > (select avg(sal) from emp)
-order by sal;
-
--- COMMAND ----------
-
--- DBTITLE 1,위 결과 내 사원이 소속된 부서 코드, 부서명 조회 in dept
-select deptno as `부서코드`, dname as `부서명`
-from dept
-where exists(
-
-
-select *
-from emp
-where sal > (select avg(sal) from emp)
-and dept.deptno = emp.deptno
-
-
-);
-
--- COMMAND ----------
-
--- DBTITLE 1,추가0) 사번이 '7844'인 사원의 job 과 동일한 job 인 사원의 사번, 이름, job 을 출력!
--- 사번이 '7844'인 사원의 job 과 동일한 job 인 사원의 사번, 이름, job 을 출력!
--- 메인 쿼리:  '서브쿼리'와 동일한 job을 가진 사원의 사번, 이름, job 을 출력
--- 서브 쿼리: 사번이 '7844'인 사원의 job
-
-
--- COMMAND ----------
-
--- DBTITLE 1,추가1
--- 사번이 '7521' 인 사원의 job 과 동일하고 '7900' 인 사번의 급여보다 많은 급여를 받는 사원의 사번, 이름, job, 급여를 출력하라
--- 메인: 서브의 조건에 맞는 사원의 사번, 이름, job, 급여를 출력하라
--- 서브: 사번이 '7521' 인 사원의 job   +    '7900' 인 사번의 급여보다 많은 급여
-
-
-
-
--- COMMAND ----------
-
--- DBTITLE 1,추가2
--- 가장 적은 급여를 받는 사원의 사번, 이름, 급여를 출력!
--- 메인: 사번, 이름, 급여를 출력!
--- 서브: 가장 적은 급여
-
-
--- where sal = (select min(sal) from emp);
-
--- COMMAND ----------
-
--- DBTITLE 1,추가3) having절 넣어서 해보기
--- 부서별 최소 급여 중에서 30번 부서의 최소급여보다는 큰 최소급여인 부서의 부서번호, 최소 급여를 출력하라
--- 메인: 부서번호, 최소 급여
--- 서브: 부서별 최소 급여=having절, 30번 부서 최소급여 = 서브쿼리    
-
---부서별 최소 급여 > (30번 부서 최소 급여)
-
--- COMMAND ----------
-
-
+-- DBTITLE 1,조건문을 걸어 '판매수'가 2회 이상인 결과만 남기기
+select day(date) as day, count(*) as `판매수`
+from sales
+group by day
+having `판매수` > 1
+order by day;
 
 -- COMMAND ----------
 
 -- DBTITLE 1,작업환경 비우기(안하셔도 됩니다.)
--- MAGIC %run "./Includes/Classroom-Cleanup"
+-- %run "./Includes/Classroom-Cleanup"
