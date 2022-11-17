@@ -84,12 +84,13 @@ show tables;
 -- MAGIC %md
 -- MAGIC ### 사용해볼 명령어
 -- MAGIC 1. select
--- MAGIC 2. distinct
--- MAGIC 3. describe
--- MAGIC 4. where
--- MAGIC 5. group by
--- MAGIC 6. order by
--- MAGIC 7. having
+-- MAGIC 2. 집계함수
+-- MAGIC 3. distinct
+-- MAGIC 4. describe
+-- MAGIC 5. where
+-- MAGIC 6. group by
+-- MAGIC 7. order by
+-- MAGIC 8. having
 
 -- COMMAND ----------
 
@@ -122,7 +123,80 @@ from sales;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 2. distinct
+-- MAGIC ### 2. 집계 함수
+-- MAGIC - 여러 행의 수치를 단 1개의 수치로 반환(즉, 여러 행들을 합쳐서 1개의 값을 반환)
+-- MAGIC   - COUNT() : 여러 행의 수치의 총개수를 반환합니다.
+-- MAGIC   - AVG() : 여러 행의 수치의 평균 값을 반환합니다.
+-- MAGIC   - SUM() : 여러 행의 수치의 총 합을 반환합니다.
+-- MAGIC   - MAX()와 MIN() : 여러 행의 수치 내에서 각각 최댓값과 최솟값을 반환합니다.
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC - select `count(카운트할 컬럼)` from `테이블`
+
+-- COMMAND ----------
+
+-- DBTITLE 1,count(): 수량 계산 (해당 테이블의 전체 row 수 확인)
+select count(*) from sales;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC - select avg `(카운트할 컬럼)` from `테이블`
+-- MAGIC 
+-- MAGIC - 만약 avg가 소수점으로 나왔는데, 소수점 보여주기 싫으면?
+-- MAGIC - select `round(avg(카운트할 컬럼), 0)` from `테이블`          -> (이때, 0의 의미는 0의 자리까지 보여주겠다는 의미)
+
+-- COMMAND ----------
+
+-- DBTITLE 1,avg(): 평균
+select avg(sales_price) from sales;
+
+-- COMMAND ----------
+
+-- DBTITLE 1,avg(): 평균 - round를 이용해서 소수점 조절
+select round(avg(sales_price),0) as `평균 판매가` from sales;
+
+-- COMMAND ----------
+
+-- DBTITLE 1,avg(): 평균 - round를 이용해서 소수점 조절
+select round(avg(sales_price),1) as `평균 판매가` from sales;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC - select `max(카운트할 컬럼)` from `테이블`
+
+-- COMMAND ----------
+
+-- DBTITLE 1,max(): 최대값
+select max(sales_price) as `최대 판매가` from sales;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC - select `min(카운트할 컬럼)` from `테이블`
+
+-- COMMAND ----------
+
+-- DBTITLE 1,min(): 최소값
+select min(sales_price) as `최소 판매가` from sales;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC - select `sum(카운트할 컬럼)` from `테이블`
+
+-- COMMAND ----------
+
+-- DBTITLE 1,sum(): 합계
+select sum(sales_price) as `총 판매가` from sales;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## 3. distinct
 -- MAGIC 
 -- MAGIC - `중복`을 제외하고 select한 모든 것을 출력
 
@@ -143,7 +217,7 @@ SELECT count(distinct artist_id) FROM sales;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 3. describe
+-- MAGIC ## 4. describe
 -- MAGIC 
 -- MAGIC - `describe`는 조회하는 테이블의 스키마 정보를 보여줌.
 -- MAGIC - 출력에 관한 몇가지 옵션이 있음
