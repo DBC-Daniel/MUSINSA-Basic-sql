@@ -13,6 +13,10 @@
 
 -- COMMAND ----------
 
+use musin;
+
+-- COMMAND ----------
+
 SELECT ENAME, a.DEPTNO, DNAME
 FROM emp_sample as a
 INNER JOIN dept_sample as b
@@ -99,8 +103,8 @@ WHERE JOB = 'SALESMAN';
 -- COMMAND ----------
 
 SELECT b.id, b.title, a.first_name, a.last_name
-FROM megazone.books b
-INNER JOIN megazone.authors a
+FROM musin.books b
+INNER JOIN musin.authors a
 ON b.author_id = a.id
 ORDER BY b.id;
 
@@ -118,8 +122,8 @@ select * from books
 -- COMMAND ----------
 
 SELECT b.id, b.title, b.type, t.last_name AS translator
-FROM megazone.books b
-JOIN megazone.translators t
+FROM musin.books b
+JOIN musin.translators t
 ON b.translator_id = t.id
 ORDER BY b.id;
 
@@ -133,8 +137,8 @@ ORDER BY b.id;
 -- COMMAND ----------
 
 SELECT b.id, b.title, e.last_name AS editor
-FROM megazone.books b
-LEFT JOIN megazone.editors e
+FROM musin.books b
+LEFT JOIN musin.editors e
 ON b.editor_id = e.id
 ORDER BY b.id;
 
@@ -150,10 +154,10 @@ ORDER BY b.id;
 
 SELECT b.id, b.title, b.type, a.last_name AS author,
  t.last_name AS translator
-FROM megazone.books b
-LEFT JOIN megazone.authors a
+FROM musin.books b
+LEFT JOIN musin.authors a
 ON b.author_id = a.id
-LEFT JOIN megazone.translators t
+LEFT JOIN musin.translators t
 ON b.translator_id = t.id
 ORDER BY b.id;
 
@@ -168,8 +172,8 @@ ORDER BY b.id;
 -- COMMAND ----------
 
 SELECT b.id, b.title, e.last_name AS editor
-FROM megazone.books b
-RIGHT JOIN megazone.editors e
+FROM musin.books b
+RIGHT JOIN musin.editors e
 ON b.editor_id = e.id
 ORDER BY b.id;
 

@@ -94,7 +94,7 @@ ON a.deptno = b.deptno;
 
 -- COMMAND ----------
 
--- DBTITLE 1,1. Emp 테이블을과 dept 테이블을 Cross Join 해보시오
+-- DBTITLE 1,1. Emp 테이블과 dept 테이블을 Cross Join 해보시오
 SELECT emp_id, name, a.deptno, direct_supervisor_id, deptname
 FROM musin.emp a
 CROSS JOIN musin.dept b;

@@ -16,7 +16,7 @@
 
 -- COMMAND ----------
 
-use megazone;
+use musin;
 
 -- COMMAND ----------
 
@@ -85,7 +85,7 @@ select * from aac_outcomes limit 3;
 
 -- COMMAND ----------
 
-use megazone;
+use musin;
 
 select a.animal_id as `보호소 온 동물명`, b.animal_id as `입양간 동물명`, b.name, a.intake_condition
 from aac_intakes a
@@ -94,7 +94,7 @@ on a.animal_id = b.animal_id
 
 -- COMMAND ----------
 
-use megazone;
+use musin;
 
 select a.animal_id as `보호소 온 동물명`, b.animal_id as `입양간 동물명`, b.name, a.intake_condition
 from aac_intakes a
@@ -105,7 +105,7 @@ order by b.animal_id, b.name;
 
 -- COMMAND ----------
 
-use megazone;
+use musin;
 
 select b.animal_id, b.name, a.intake_condition
 from aac_intakes as a
@@ -149,13 +149,13 @@ FROM aac_intakes A
 inner JOIN aac_outcomes B
 ON A.ANIMAL_ID = B.ANIMAL_ID
 WHERE A.DATETIME > B.DATETIME
-ORDER BY A.DATETIME, ;
+ORDER BY A.DATETIME ;
 
 -- COMMAND ----------
 
 select aac_outcomes.animal_id as `번호`, aac_outcomes.name as `이름`, aac_intakes.datetime as `입소일`, aac_outcomes.datetime as `입양일`
-from megazone.aac_outcomes
-left join megazone.aac_intakes on aac_outcomes.animal_id = aac_intakes.animal_id
+from musin.aac_outcomes
+left join musin.aac_intakes on aac_outcomes.animal_id = aac_intakes.animal_id
 where not aac_outcomes.datetime < aac_intakes.datetime
 order by aac_outcomes.animal_id;
 
@@ -201,88 +201,3 @@ ORDER BY ANIMAL_ID
 -- COMMAND ----------
 
 
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ### 서브쿼리
--- MAGIC - 사용 테이블: emp
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ##### 서브쿼리 1
--- MAGIC - emp 테이블에서 BLAKE 보다 급여가 많은 사원들의 empno, ename, sal을 검색해라
-
--- COMMAND ----------
-
-select empno, ename, sal 
-from emp
-where sal > 
-(
-select sal 
-from emp
-where ename = 'BLAKE'
-)
-
--- COMMAND ----------
-
-
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ##### 서브쿼리 2
--- MAGIC - 이름이 ALLEN인 사원과 같은 업무를 하는 사람의 사원번호, 이름, 업무, 급여 추출
-
--- COMMAND ----------
-
-select empno, ename, job, sal from emp
-where job=(select job from emp where ename='ALLEN');
-
--- COMMAND ----------
-
-
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ##### 서브쿼리 3
--- MAGIC - EMP 테이블에서 급여의 평균보다 적은 사원의 사원번호, 이름, 업무, 급여, 부서번호 추출
-
--- COMMAND ----------
-
-select empno, ename, job, sal, deptno from emp
-where sal<(select avg(sal) from emp);
-
--- COMMAND ----------
-
-
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ##### 서브쿼리 4
--- MAGIC - 부서별 최소급여가 20번 부서의 최소급여보다 작은 부서의 부서번호, 최소 급여 추출
-
--- COMMAND ----------
-
-select deptno, min(sal) from emp
-group by deptno
-having min(sal)>(select min(sal) from emp where deptno=20);
-
--- COMMAND ----------
-
-
-
--- COMMAND ----------
-
--- MAGIC %md
--- MAGIC ##### 서브쿼리 5
--- MAGIC - 평균급여 이상을 받는 모든 사원에 대해 사원의 번호와 이름을 급여가 많은 순서로 추출
-
--- COMMAND ----------
-
-select empno, ename from emp
-where sal>(select avg(sal) from emp)
-order by sal desc;

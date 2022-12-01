@@ -16,12 +16,12 @@
 
 -- COMMAND ----------
 
-use megazone;
+use musin;
 show tables
 
 -- COMMAND ----------
 
-desc table megazone.aac_intakes;
+desc table musin.aac_intakes;
 
 -- COMMAND ----------
 
@@ -66,11 +66,11 @@ order by animal_id desc;
 
 -- COMMAND ----------
 
-select distinct(intake_condition) from megazone.aac_intakes;
+select distinct(intake_condition) from musin.aac_intakes;
 
 -- COMMAND ----------
 
-select ANIMAL_ID, ANIMAL_TYPE, intake_condition from megazone.aac_intakes
+select ANIMAL_ID, ANIMAL_TYPE, intake_condition from musin.aac_intakes
 where INTAKE_CONDITION = 'Sick';
 
 -- COMMAND ----------
@@ -84,12 +84,12 @@ where INTAKE_CONDITION = 'Sick';
 
 -- COMMAND ----------
 
-select datetime from megazone.aac_intakes
+select datetime from musin.aac_intakes
 
 -- COMMAND ----------
 
 select year(datetime) as year, count(*) as cnt 
-from megazone.aac_intakes
+from musin.aac_intakes
 group by(year(datetime))
 order by count(*) desc
 
@@ -104,12 +104,12 @@ order by count(*) desc
 
 -- COMMAND ----------
 
-select distinct(animal_type) from megazone.aac_intakes
+select distinct(animal_type) from musin.aac_intakes
 
 -- COMMAND ----------
 
 select animal_type, count(animal_type) as count
-from megazone.aac_intakes
+from musin.aac_intakes
 group by animal_type
 having animal_type = 'Cat' or animal_type ='Dog';
 
@@ -127,32 +127,32 @@ having animal_type = 'Cat' or animal_type ='Dog';
 -- COMMAND ----------
 
 select count(name)
-from megazone.aac_intakes
+from musin.aac_intakes
 
 -- COMMAND ----------
 
 -- select count(name)
 select count(*)
-from megazone.aac_intakes
+from musin.aac_intakes
 where name is null
 
 -- COMMAND ----------
 
 select count(*)
-from megazone.aac_intakes
+from musin.aac_intakes
 where name is not null
 
 -- COMMAND ----------
 
 select name, count(name) as cnt 
-from megazone.aac_intakes
+from musin.aac_intakes
 where name is not null
 group by name
 
 -- COMMAND ----------
 
 select name, count(name) as cnt 
-from megazone.aac_intakes
+from musin.aac_intakes
 where name is not Null
 group by name
 having cnt > 1
@@ -173,7 +173,7 @@ order by cnt asc;
 -- COMMAND ----------
 
 select hour(datetime) as hour, count(*) as cnt
-from megazone.aac_outcomes
+from musin.aac_outcomes
 where hour(datetime) >= 9 and hour(datetime) < 20
 group by hour(datetime)
 order by cnt desc

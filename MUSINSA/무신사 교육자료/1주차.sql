@@ -51,7 +51,7 @@
 
 -- MAGIC %md
 -- MAGIC #### 6. 쿼리
--- MAGIC - sql을 사용하는걸 쿼리한다고 한다.
+-- MAGIC - sql을 사용하는걸 '쿼리한다'고 한다.
 -- MAGIC - 쿼리 = '질의문'이라는 뜻을 가지고 있다.
 -- MAGIC - 예를 들어 Google(Databricks)에서 검색할 때 입력하는 '검색어(SQL)'가 일종의 '쿼리' 
 -- MAGIC - Goole에서 검색하면, Google 내에 존재하는 데이터에서 검색어로 `필터링`하는 것.
